@@ -1,8 +1,15 @@
 import keyboard
 from pynput.mouse import Listener
 import threading
-import time
-import PointChecker
+import PointCheckerOptimized as pc
+# import win32process
+# import win32api
+# import win32con
+#
+# pid = win32api.GetCurrentProcessId()
+# handle = win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS, False, pid)
+#
+# win32process.SetPriorityClass(handle, win32process.REALTIME_PRIORITY_CLASS)
 
 flag = True
 
@@ -24,7 +31,8 @@ def start_listener():
         listener.join()
 
     flag = True
-    threading.Thread(target=thread_generator, args=bresenham_line(a[0], a[1], b[0], b[1])).start()
+    threading.Thread(target=thread_generator, args=[min(a[0], b[0]), min(a[1], b[1]),
+                                                            max(a[0], b[0]), max(a[1], b[1])]).start()
 
 
 def bresenham_line(x0, y0, x1, y1):
@@ -48,10 +56,11 @@ def bresenham_line(x0, y0, x1, y1):
     return points
 
 
-def thread_generator(points):
+def thread_generator(x1, y1, x2, y2):
     while flag:
-        threading.Thread(target=PointChecker.checker, args=points).start()
-        time.sleep(10)
+        t = threading.Thread(target=pc.checker, args=(x1, y1, x2, y2))
+        t.start()
+        t.join()
 
 
 keyboard.add_hotkey('ctrl+alt+q', start_listener)
