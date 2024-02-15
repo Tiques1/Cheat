@@ -1,7 +1,7 @@
 import keyboard
 from pynput.mouse import Listener
 import threading
-import PointCheckerOptimized as pc
+import ColorChecker as pc
 
 
 flag = True
